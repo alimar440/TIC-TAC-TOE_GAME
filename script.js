@@ -69,9 +69,20 @@ const GameController = (function() {
   let gameOver = false;
   const turnBoxes = document.querySelectorAll('.turn-box');
   const gridBoxes = document.querySelectorAll('.box');
-  const resultText = document.getElementById('resultat');
   const playAgainButton = document.getElementById('play-again');
+  const resultText = document.getElementById('resultat');
+  const overlay = document.getElementById('overlay');
 
+  function showDialog(message) {
+      resultText.textContent = message;
+      resultText.style.display = 'block';
+      overlay.style.display = 'block';
+  }
+
+  function hideDialog() {
+      resultText.style.display = 'none';
+      overlay.style.display = 'none';
+  }
   
   const updateTurnDisplay = () => {
     turnBoxes.forEach(box => box.classList.remove('active-turn'));
@@ -96,7 +107,7 @@ const GameController = (function() {
     let winner = Game.checkWinner();
     
     if (winner) {
-      resultText.textContent = `${winner} a gagné ! 🎉`;
+      showDialog(`${winner} a gagné ! 🎉`);
       resultText.style.display = 'block';
       playAgainButton.style.display = 'block';
       playAgainButton.disabled = false;
@@ -105,7 +116,7 @@ const GameController = (function() {
     }
 
     if (Game.isBoardFull()) {
-      resultText.textContent = "Match nul ! 😲";
+      showDialog("Match nul ! 😲");
       resultText.style.display = 'block';
       playAgainButton.style.display = 'block';
       playAgainButton.disabled = false;
@@ -130,8 +141,8 @@ const GameController = (function() {
 
   playAgainButton.addEventListener('click', () => {
     Game.init();
+    hideDialog();
     gridBoxes.forEach(box => box.textContent = '');
-
     resultText.style.display = 'none';
     
     playAgainButton.style.display = 'none';
@@ -144,6 +155,7 @@ const GameController = (function() {
 
   
   updateTurnDisplay();
+  overlay.addEventListener('click', hideDialog);
 
   return { playTurn };
 })();
