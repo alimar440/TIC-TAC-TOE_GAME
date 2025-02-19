@@ -138,6 +138,7 @@ const GameController = (function() {
     playAgainButton.disabled = true;
 
     currentPlayer = player1;
+    gameOver = false ;
     updateTurnDisplay();
 });
 
