@@ -228,6 +228,7 @@ body.dialog-open {
 #play-again{
     background-color:#FF2E63;
     padding: 10px 20px;
+    margin-top: 20px;
     border: none ;
     font-size: 1.2rem ;
     border-radius: 5px ;
@@ -270,5 +271,5 @@ footer {
     text-align: center;
     padding: 10px;
     font-size: 14px;
-    
+
 }
