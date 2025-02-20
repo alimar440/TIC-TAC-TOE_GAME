@@ -111,7 +111,7 @@ body {
 }
 
 .active-choix {
-    background-color: #ffcc00; 
+    background-color: #786004; 
     color: white;
     border: 2px solid #d4a100;
 }
@@ -133,7 +133,7 @@ body.dialog-open {
 #choice-dialog {
     pointer-events: auto; 
     z-index: 1000; 
-    background: white;
+    /* background: white; */
 }
 
 .symbol-choice:hover {
