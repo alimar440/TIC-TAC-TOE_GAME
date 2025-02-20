@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <dialog id="choice-dialog">
+        <p>Choisissez votre symbole :</p>
+        <div class="flex">
+            <button id="choix-O" class="symbol-choice " data-symbol="X">X</button>
+            <button id="choix-X" class="symbol-choice active-choix" data-symbol="O">O</button></div>
+    </dialog>
+    
     <div class="turn-container">
         <h3>Tour de</h3>
         <div class="turn-box align active-turn" id="turn-O">O</div>

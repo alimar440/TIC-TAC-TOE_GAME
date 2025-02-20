@@ -30,11 +30,12 @@ function Gameboard() {
     );
   };
 
+  //les combinaisons pour pouvoir gagner
   const checkWinner = () => {
     const lines = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Lignes
-      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Colonnes
-      [0, 4, 8], [2, 4, 6]             // Diagonales
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Pour les lignes
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Pour les colonnes
+      [0, 4, 8], [2, 4, 6]             // Pour les diagonales
     ];
 
     for (let line of lines) {
@@ -65,13 +66,38 @@ const GameController = (function() {
   const Game = Gameboard();
   let player1 = player("O");
   let player2 = player("X");
-  let currentPlayer = player1;
   let gameOver = false;
+  let currentPlayer = player1;
   const turnBoxes = document.querySelectorAll('.turn-box');
   const gridBoxes = document.querySelectorAll('.box');
   const playAgainButton = document.getElementById('play-again');
   const resultText = document.getElementById('resultat');
   const overlay = document.getElementById('overlay');
+  const choiceDialog = document.getElementById('choice-dialog');
+  const symbol_choice = document.querySelectorAll('.symbol-choice')
+
+  choiceDialog.showModal();
+  document.body.classList.add('dialog-open');
+
+  symbol_choice.forEach(box => box.addEventListener('click' ,  function(){
+    
+    symbol_choice.forEach(btn => btn.classList.remove('active-choix'));
+
+    box.classList.add('active-choix');
+
+    if (box.textContent === "O") {
+      currentPlayer = player1;
+    } else {
+      currentPlayer = player2;
+    }
+    updateTurnDisplay();
+    
+    setTimeout(() => {
+        choiceDialog.close();
+        document.body.classList.remove('dialog-open');
+      }, 300);
+
+  }  ) ) ;
 
   function showDialog(message) {
       resultText.textContent = message;
@@ -83,7 +109,7 @@ const GameController = (function() {
       resultText.style.display = 'none';
       overlay.style.display = 'none';
   }
-  
+  //fonction pour indiquer le tour de chacun
   const updateTurnDisplay = () => {
     turnBoxes.forEach(box => box.classList.remove('active-turn'));
     if (currentPlayer.getSymbol() === "O") {
@@ -92,7 +118,7 @@ const GameController = (function() {
       document.getElementById('turn-X').classList.add('active-turn');
     }
   };
-
+  //fonction pour mettre un symbol
   const playTurn = (a) => {
     if (gameOver) return;
     const result = Game.placeMark(a, currentPlayer.getSymbol());
@@ -127,7 +153,7 @@ const GameController = (function() {
     updateTurnDisplay();
     return false;
   };
-
+  //fonction pour changer de joueur
   const switchPlayer = () => {
     currentPlayer = currentPlayer === player1 ? player2 : player1;
   };
