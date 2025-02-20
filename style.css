@@ -257,3 +257,17 @@ body.dialog-open {
     cursor: not-allowed;
 } */
 
+/* ============================= */
+/*      footer                  */
+/* ============================= */
+
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+}
