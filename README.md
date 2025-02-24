@@ -2,7 +2,7 @@
 
 ## [Play Now](https://alimar440.github.io/TIC-TAC-TOE_GAME/)
 
-![This is an image](img/Screenshot 2025-02-20 185238.png)
+![This is an image](img/Screenshot 2025-02-20 185124.png)
 
 
 
