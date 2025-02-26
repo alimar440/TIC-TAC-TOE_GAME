@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TIC TAC TOE</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/x-icon" href="img/logo.png">
 </head>
 <body>
     <dialog id="choice-dialog">
         <p>Choisissez votre symbole :</p>
         <div class="flex">
             <button id="choix-O" class="symbol-choice " data-symbol="X">X</button>
-            <button id="choix-X" class="symbol-choice  " data-symbol="O">O</button></div>
+            <button id="choix-X" class="symbol-choice active-choix" data-symbol="O">O</button></div>
     </dialog>
     
     <div class="turn-container">
@@ -35,10 +34,7 @@
     <div id="overlay"></div>
     <div id="resultat" ># Win</div>
     <button id="play-again" disabled>Play Again</button>
-    <footer>
-        <p>&copy; 2025 Ali Mar Ngom. Tous droits réservés.</p>
-    </footer>
-    
-    <script type="module" src="script.js"></script>
+
+    <script src="script.js"></script>
 </body>
 </html>

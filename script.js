@@ -1,160 +1,187 @@
-class Gameboard {
-  constructor() {
-    this.gameBoard = Array(9).fill("");
-  }
+// Création de la logique du jeu de Tic Tac Toe
+function Gameboard() {
+  const gameBoard = ["", "", "", "", "", "", "", "", ""];
 
-  placeMark(index, symbol) {
-    if (this.gameBoard[index] === "") {
-      this.gameBoard[index] = symbol;
-      return true;
+  const placeMark = (a, c) => {
+    if (gameBoard[a] === "") {
+      gameBoard[a] = c;
+      return 1;
     } else {
       console.log("Cette case est déjà occupée !");
-      return false;
+      return 0;
     }
-  }
+  };
 
-  init() {
-    this.gameBoard.fill("");
-  }
+  const init = () => {
+    for (let i = 0; i < gameBoard.length; i++) {
+      gameBoard[i] = ""; 
+    }
+  };
 
-  getBoard() {
-    return this.gameBoard;
-  }
+  const getBoard = () => gameBoard;
 
-  displayGameBoard() {
+  const displayGameBoard = () => {
     console.log(
-      `${this.gameBoard.slice(0, 3).join(" | ")}\n---------\n` +
-      `${this.gameBoard.slice(3, 6).join(" | ")}\n---------\n` +
-      `${this.gameBoard.slice(6, 9).join(" | ")}\n`
+      `${gameBoard.slice(0, 3).join(" | ")}\n` +
+      `---------\n` +
+      `${gameBoard.slice(3, 6).join(" | ")}\n` +
+      `---------\n` +
+      `${gameBoard.slice(6, 9).join(" | ")}\n`
     );
-  }
+  };
 
-  checkWinner() {
+  //les combinaisons pour pouvoir gagner
+  const checkWinner = () => {
     const lines = [
-      [0, 1, 2], [3, 4, 5], [6, 7, 8],
-      [0, 3, 6], [1, 4, 7], [2, 5, 8],
-      [0, 4, 8], [2, 4, 6]
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Pour les lignes
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Pour les colonnes
+      [0, 4, 8], [2, 4, 6]             // Pour les diagonales
     ];
 
-    for (let [a, b, c] of lines) {
-      if (this.gameBoard[a] && this.gameBoard[a] === this.gameBoard[b] && this.gameBoard[a] === this.gameBoard[c]) {
-        return this.gameBoard[a];
+    for (let line of lines) {
+      const [a, b, c] = line;
+      if (gameBoard[a] !== "" && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
+        return gameBoard[a]; 
       }
     }
     return null;
-  }
+  };
 
-  isBoardFull() {
-    return this.gameBoard.every(cell => cell !== "");
-  }
+  const isBoardFull = () => {
+    return gameBoard.every(cell => cell !== "");
+  };
+
+  return { placeMark, displayGameBoard, getBoard, init, checkWinner, isBoardFull };
 }
 
-class Player {
-  constructor(symbol) {
-    this.symbol = symbol;
-  }
-
-  getSymbol() {
-    return this.symbol;
-  }
+function player(symb) {
+  let symbol = symb;  
+  const setSymbol = (sym) => { symbol = sym; };  
+  const getSymbol = () => symbol; 
+  return {setSymbol, getSymbol };
 }
 
-class GameController {
-  constructor() {
-    this.Game = new Gameboard();
-    this.player1 = new Player("O");
-    this.player2 = new Player("X");
-    this.currentPlayer = this.player1;
-    this.gameOver = false;
 
-    this.turnBoxes = document.querySelectorAll('.turn-box');
-    this.gridBoxes = document.querySelectorAll('.box');
-    this.playAgainButton = document.getElementById('play-again');
-    this.resultText = document.getElementById('resultat');
-    this.overlay = document.getElementById('overlay');
-    this.choiceDialog = document.getElementById('choice-dialog');
-    this.symbolChoice = document.querySelectorAll('.symbol-choice');
+const GameController = (function() {
+  const Game = Gameboard();
+  let player1 = player("O");
+  let player2 = player("X");
+  let gameOver = false;
+  let currentPlayer = player1;
+  const turnBoxes = document.querySelectorAll('.turn-box');
+  const gridBoxes = document.querySelectorAll('.box');
+  const playAgainButton = document.getElementById('play-again');
+  const resultText = document.getElementById('resultat');
+  const overlay = document.getElementById('overlay');
+  const choiceDialog = document.getElementById('choice-dialog');
+  const symbol_choice = document.querySelectorAll('.symbol-choice')
 
-    this.setupEventListeners();
-    this.showChoiceDialog();
-    this.updateTurnDisplay();
-  }
+  choiceDialog.showModal();
+  document.body.classList.add('dialog-open');
 
-  showChoiceDialog() {
-    this.choiceDialog.showModal();
-    document.body.classList.add('dialog-open');
+  symbol_choice.forEach(box => box.addEventListener('click' ,  function(){
+    
+    symbol_choice.forEach(btn => btn.classList.remove('active-choix'));
 
-    this.symbolChoice.forEach(box => box.addEventListener('click', () => {
-      this.symbolChoice.forEach(btn => btn.classList.remove('active-choix'));
-      box.classList.add('active-choix');
-      this.currentPlayer = box.textContent === "O" ? this.player1 : this.player2;
-      this.updateTurnDisplay();
-      setTimeout(() => {
-        this.choiceDialog.close();
+    box.classList.add('active-choix');
+
+    if (box.textContent === "O") {
+      currentPlayer = player1;
+    } else {
+      currentPlayer = player2;
+    }
+    updateTurnDisplay();
+    
+    setTimeout(() => {
+        choiceDialog.close();
         document.body.classList.remove('dialog-open');
       }, 300);
-    }));
+
+  }  ) ) ;
+
+  function showDialog(message) {
+      resultText.textContent = message;
+      resultText.style.display = 'block';
+      overlay.style.display = 'block';
   }
 
-  showDialog(message) {
-    this.resultText.textContent = message;
-    this.overlay.style.display = 'block';
+  function hideDialog() {
+      resultText.style.display = 'none';
+      overlay.style.display = 'none';
   }
+  //fonction pour indiquer le tour de chacun
+  const updateTurnDisplay = () => {
+    turnBoxes.forEach(box => box.classList.remove('active-turn'));
+    if (currentPlayer.getSymbol() === "O") {
+      document.getElementById('turn-O').classList.add('active-turn');
+    } else {
+      document.getElementById('turn-X').classList.add('active-turn');
+    }
+  };
+  //fonction pour mettre un symbol
+  const playTurn = (a) => {
+    if (gameOver) return;
+    const result = Game.placeMark(a, currentPlayer.getSymbol());
+    if (result === 0) return false;
+    
 
-  hideDialog() {
-    this.overlay.style.display = 'none';
-  }
-
-  updateTurnDisplay() {
-    this.turnBoxes.forEach(box => box.classList.remove('active-turn'));
-    document.getElementById(`turn-${this.currentPlayer.getSymbol()}`).classList.add('active-turn');
-  }
-
-  playTurn(index) {
-    if (this.gameOver || !this.Game.placeMark(index, this.currentPlayer.getSymbol())) return;
-
-    this.gridBoxes[index].textContent = this.currentPlayer.getSymbol();
-    this.Game.displayGameBoard();
-
-    let winner = this.Game.checkWinner();
+    
+    gridBoxes[a].textContent = currentPlayer.getSymbol(); 
+    
+    Game.displayGameBoard(); 
+    
+    let winner = Game.checkWinner();
+    
     if (winner) {
-      this.showDialog(`${winner} a gagné ! 🎉`);
-      this.playAgainButton.style.display = 'block';
-      this.gameOver = true;
-      return;
+      showDialog(`${winner} a gagné ! 🎉`);
+      resultText.style.display = 'block';
+      playAgainButton.style.display = 'block';
+      playAgainButton.disabled = false;
+      gameOver = true;
+      return true;
     }
 
-    if (this.Game.isBoardFull()) {
-      this.showDialog("Match nul ! 😲");
-      this.playAgainButton.style.display = 'block';
-      return;
+    if (Game.isBoardFull()) {
+      showDialog("Match nul ! 😲");
+      resultText.style.display = 'block';
+      playAgainButton.style.display = 'block';
+      playAgainButton.disabled = false;
+      return true;
     }
 
-    this.switchPlayer();
-    this.updateTurnDisplay();
-  }
+    switchPlayer();
+    updateTurnDisplay();
+    return false;
+  };
+  //fonction pour changer de joueur
+  const switchPlayer = () => {
+    currentPlayer = currentPlayer === player1 ? player2 : player1;
+  };
 
-  switchPlayer() {
-    this.currentPlayer = this.currentPlayer === this.player1 ? this.player2 : this.player1;
-  }
+  
+  gridBoxes.forEach((box, index) => {
+    box.addEventListener('click', () => playTurn(index));
+  });
 
-  resetGame() {
-    this.Game.init();
-    this.gridBoxes.forEach(box => box.textContent = '');
-    this.gameOver = false;
-    this.currentPlayer = this.player1;
-    this.hideDialog();
-    this.updateTurnDisplay();
-  }
+  
 
-  setupEventListeners() {
-    this.gridBoxes.forEach((box, index) => {
-      box.addEventListener('click', () => this.playTurn(index));
-    });
+  playAgainButton.addEventListener('click', () => {
+    Game.init();
+    hideDialog();
+    gridBoxes.forEach(box => box.textContent = '');
+    resultText.style.display = 'none';
+    
+    playAgainButton.style.display = 'none';
+    playAgainButton.disabled = true;
 
-    this.playAgainButton.addEventListener('click', () => this.resetGame());
-    this.overlay.addEventListener('click', () => this.hideDialog());
-  }
-}
+    currentPlayer = player1;
+    gameOver = false ;
+    updateTurnDisplay();
+});
 
-const gameController = new GameController();
+  
+  updateTurnDisplay();
+  overlay.addEventListener('click', hideDialog);
+
+  return { playTurn };
+})();
